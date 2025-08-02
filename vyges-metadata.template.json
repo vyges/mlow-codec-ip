@@ -1,0 +1,161 @@
+{
+  "$schema": "https://vyges.com/schema/v1/vyges-metadata.schema.json",
+  "x-version": "1.0.0",
+  "name": "example/example-module",
+  "version": "1.0.0",
+  "description": "Example IP module demonstrating basic RTL functionality with cocotb testbench integration.",
+  "license": "Apache-2.0",
+  "template": "vyges-ip-template@1.0.0",
+  "target": ["asic", "fpga"],
+  "design_type": ["digital"],
+  "maturity": "prototype",
+  "created": "2025-08-01T22:53:27Z",
+  "updated": "2025-08-01T22:53:27Z",
+  "source": {
+    "type": "git",
+    "url": "https://github.com/example/timer-16bit",
+    "commit": "main",
+    "private": false,
+    "containsEncryptedPayload": false,
+    "indexing": true
+  },
+  "maintainers": [
+    {
+      "name": "Vyges Team",
+      "email": "team@vyges.com",
+      "github": "vyges"
+    }
+  ],
+  "branding": {
+    "provider": "Vyges Inc.",
+    "logo": "https://vyges.com/assets/logo.svg",
+    "website": "https://vyges.com/ip/example-module",
+    "usage": "Use of the logo is permitted for attribution or compatibility references only."
+  },
+  "interfaces": [
+    {
+      "type": "clock",
+      "direction": "input",
+      "signals": [
+        { "name": "clk", "direction": "input", "type": "clock", "description": "System clock input" }
+      ]
+    },
+    {
+      "type": "reset",
+      "direction": "input",
+      "signals": [
+        { "name": "rst_n", "direction": "input", "type": "reset", "active_level": "low", "description": "Active-low reset signal" }
+      ]
+    },
+    {
+      "type": "data",
+      "direction": "input",
+      "width": 8,
+      "signals": [
+        { "name": "data_in", "direction": "input", "width": 8, "type": "data", "description": "8-bit data input" }
+      ]
+    },
+    {
+      "type": "data",
+      "direction": "output",
+      "width": 8,
+      "signals": [
+        { "name": "data_out", "direction": "output", "width": 8, "type": "data", "description": "8-bit data output" },
+        { "name": "valid_out", "direction": "output", "type": "control", "description": "Data valid flag" }
+      ]
+    }
+  ],
+  "parameters": [
+    {
+      "name": "DATA_WIDTH",
+      "type": "int",
+      "default": 8,
+      "description": "Width of data input and output",
+      "range": { "min": 1, "max": 64 },
+      "units": "bits",
+      "required": false
+    }
+  ],
+  "test": {
+    "coverage": true,
+    "testbenches": ["cocotb", "systemverilog"],
+    "simulators": ["verilator", "iverilog"],
+    "status": "passing",
+    "cocotb_integration": {
+      "status": "verified",
+      "version": "v1.9.2",
+      "simulators": ["icarus", "verilator"],
+      "makefile_approach": "standard",
+      "fallback_support": true
+    }
+  },
+  "flows": {
+    "verilator": {
+      "status": "verified",
+      "cocotb_integration": "working"
+    },
+    "icarus": {
+      "status": "verified",
+      "cocotb_integration": "working"
+    },
+    "openlane": {
+      "pdks": ["sky130B"],
+      "status": "template"
+    },
+    "vivado": {
+      "status": "template"
+    }
+  },
+  "asic": {
+    "flavor": "digital",
+    "pdks": ["sky130B"],
+    "synthesis_tool": "openlane",
+    "clock_freq_mhz": 100,
+    "constraints": ["constraints.sdc"],
+    "tools": ["yosys", "openroad"]
+  },
+  "fpga": {
+    "toolchain": "vivado",
+    "board": "arty-a7-35",
+    "cfu_playground_compatible": true,
+    "constraints": ["constraints.xdc"]
+  },
+  "integration": {
+    "examples": [
+      {
+        "target": "simulation",
+        "wrapper": "integration/example_wrapper.v",
+        "tb": "tb/cocotb/test_example.py"
+      },
+      {
+        "target": "rtl",
+        "module": "rtl/example_module.sv",
+        "description": "Example RTL module with basic functionality"
+      }
+    ]
+  },
+  "automation": {
+    "automation_level": "enhanced",
+    "minimal_required": ["name", "version", "license", "interfaces", "template", "target", "design_type", "maturity", "description", "source", "asic", "fpga", "test", "flows"],
+    "recommended_for_automation": ["parameters", "dependencies", "toolRequirements", "performance", "reliability", "packaging", "community"],
+    "blocking_issues": []
+  },
+  "meta": {
+    "template": {
+      "generator": "vyges-cli",
+      "init_tool": "vyges-cli", 
+      "template_version": "1.0.0",
+      "generated_at": "2025-08-01T22:53:27Z"
+    },
+    "generated_by": "vyges-cli",
+    "schema": {
+      "version": "1.0.0",
+      "compatible_versions": ["1.0.0", "1.1.0"],
+      "generated_with": "vyges-cli"
+    }
+  },
+  "categories": ["Base Libraries", "Miscellaneous"],
+  "tags": ["template", "example", "cocotb", "verilator", "icarus", "ip-wrapper"],
+  "keywords": ["template", "example", "cocotb", "verilator", "icarus", "rtl", "testbench", "ip-wrapper", "glue-logic"]
+}
+  
