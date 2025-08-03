@@ -1,0 +1,28 @@
+{
+  "project": "mlow_codec",
+  "version": "1.0.0",
+  "simulator": "icarus",
+  "test_parameters": {
+    "CLK_PERIOD_NS": 20,
+    "SAMPLE_RATE": 48000,
+    "FRAME_SIZE": 480,
+    "MAX_BITRATE": 32000,
+    "LPC_ORDER": 16,
+    "SUBBAND_COUNT": 2
+  },
+  "bitrate_configs": {
+    "0": {"bitrate": 6000, "quality_target": 60},
+    "1": {"bitrate": 8000, "quality_target": 65},
+    "2": {"bitrate": 12000, "quality_target": 70},
+    "3": {"bitrate": 16000, "quality_target": 75},
+    "4": {"bitrate": 20000, "quality_target": 80},
+    "5": {"bitrate": 24000, "quality_target": 85},
+    "6": {"bitrate": 28000, "quality_target": 90},
+    "7": {"bitrate": 32000, "quality_target": 95}
+  },
+  "bandwidth_configs": {
+    "0": {"name": "NarrowBand", "freq_range": "0-4kHz"},
+    "1": {"name": "WideBand", "freq_range": "0-8kHz"},
+    "2": {"name": "SuperWideBand", "freq_range": "0-16kHz"}
+  }
+}

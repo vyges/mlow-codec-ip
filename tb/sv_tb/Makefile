@@ -1,155 +1,125 @@
-#==============================================================================
-# SystemVerilog Testbench Makefile
-#==============================================================================
-# Description: Makefile for SystemVerilog testbench execution with Icarus
-#              and Verilator simulators. Generates VCD waveform files.
+#=============================================================================
+# MLow Codec - SystemVerilog Testbench Makefile
+#=============================================================================
+# Description: Simplified Makefile for SystemVerilog-based verification
+#              Optimized for Icarus Verilog and Verilator
+#
 # Author:      Vyges Team
-# Date:        2025-01-20
+# Date:        2025-08-02T16:08:15Z
 # Version:     1.0.0
-#==============================================================================
+# License:     Apache-2.0
+#=============================================================================
 
-# Default simulator
-SIM ?= icarus
+# Simulator choice (iverilog, verilator)
+SIM ?= iverilog
 
-# RTL and testbench files
-RTL_DIR = ../../rtl
-TB_DIR = .
-RTL_FILES = $(wildcard $(RTL_DIR)/*.sv)
-TB_FILES = $(wildcard $(TB_DIR)/tb_*.sv)
+# SystemVerilog options
+SIM_OPTS ?= -g2012
 
-# Output directories
-BUILD_DIR = build
-VCD_DIR = waveforms
-COVERAGE_DIR = coverage
+# Top-level testbench module
+TOPLEVEL ?= tb_mlow_codec
 
-# Simulator-specific variables
-ifeq ($(SIM),icarus)
-    SIM_CMD = iverilog
-    SIM_FLAGS = -g2012 -Wall -Wno-timescale -Wno-implicit-dimensions
-    RUN_CMD = vvp
-    RUN_FLAGS = -v
-    VCD_FLAGS = -vcd
-    COVERAGE_FLAGS = -f icarus
-else ifeq ($(SIM),verilator)
-    SIM_CMD = verilator
-    SIM_FLAGS = --lint-only --Wall --Wno-fatal
-    RUN_CMD = obj_dir/V$(TOP_MODULE)
-    RUN_FLAGS = 
-    VCD_FLAGS = --trace
-    COVERAGE_FLAGS = --coverage
-else
-    $(error Unsupported simulator: $(SIM). Supported: icarus, verilator)
+# Source files
+RTL_SRCS = \
+  ../../rtl/mlow_codec.sv \
+  ../../rtl/audio_interface.sv
+
+TB_SRCS = \
+  ./tb_mlow_codec.sv
+
+ALL_SRCS = $(RTL_SRCS) $(TB_SRCS)
+
+# Verilator options
+VERILATOR_OPTS = --cc --exe --build --trace --top-module $(TOPLEVEL)
+
+# Output files
+SIM_EXEC = simv.out
+VERILATOR_EXEC = obj_dir/V$(TOPLEVEL)
+ICARUS_EXEC = $(TOPLEVEL).vvp
+
+# Waveform files
+WAVE_FILE = $(TOPLEVEL).vcd
+
+# Compilation commands by simulator
+ifeq ($(SIM), iverilog)
+  COMPILE = iverilog $(SIM_OPTS) -o $(ICARUS_EXEC) $(ALL_SRCS)
+  RUN = vvp $(ICARUS_EXEC)
+  WAVE_OPTS = -vcd $(WAVE_FILE)
 endif
 
-# Top module (should be set by user or detected)
-TOP_MODULE ?= tb_example
+ifeq ($(SIM), verilator)
+  COMPILE = verilator $(VERILATOR_OPTS) $(ALL_SRCS)
+  RUN = ./$(VERILATOR_EXEC)
+  WAVE_OPTS = --trace
+endif
 
 # Help target
 help:
-	@echo "SystemVerilog Testbench Makefile"
-	@echo "================================"
+	@echo "MLow Codec SystemVerilog Testbench"
+	@echo "==================================="
 	@echo ""
 	@echo "Available simulators:"
-	@echo "  icarus    - Icarus Verilog (default)"
+	@echo "  iverilog  - Icarus Verilog (default)"
 	@echo "  verilator - Verilator"
 	@echo ""
 	@echo "Usage examples:"
-	@echo "  make test_basic                    # Run basic test"
-	@echo "  make test_basic SIM=verilator      # Run with Verilator"
-	@echo "  make test_all                      # Run all tests"
-	@echo "  make waves                         # View waveforms"
-	@echo "  make clean                         # Clean build artifacts"
-	@echo "  make help                          # Show this help"
-	@echo ""
-	@echo "Environment variables:"
-	@echo "  SIM         - Simulator (icarus, verilator)"
-	@echo "  TOP_MODULE  - Top module name"
-	@echo "  RTL_DIR     - RTL source directory"
-	@echo "  TB_DIR      - Testbench directory"
+	@echo "  make run                           # Run simulation with default simulator"
+	@echo "  make SIM=iverilog run             # Run with Icarus Verilog"
+	@echo "  make SIM=verilator run            # Run with Verilator"
+	@echo "  make wave                         # Generate waveforms"
+	@echo "  make test                         # Run all tests"
+	@echo "  make clean                        # Clean simulation artifacts"
+	@echo "  make help                         # Show this help message"
 
-# Create output directories
-$(BUILD_DIR):
-	mkdir -p $(BUILD_DIR)
+# Main targets
+.PHONY: all clean run wave test help
 
-$(VCD_DIR):
-	mkdir -p $(VCD_DIR)
+all: compile
 
-$(COVERAGE_DIR):
-	mkdir -p $(COVERAGE_DIR)
-
-# Compile target
-compile: $(BUILD_DIR) $(VCD_DIR) $(COVERAGE_DIR)
-	@echo "Compiling with $(SIM) simulator..."
-ifeq ($(SIM),icarus)
-	$(SIM_CMD) $(SIM_FLAGS) -o $(BUILD_DIR)/$(TOP_MODULE).vvp $(RTL_FILES) $(TB_FILES)
-else ifeq ($(SIM),verilator)
-	$(SIM_CMD) $(SIM_FLAGS) $(VCD_FLAGS) --exe $(TB_FILES) $(RTL_FILES) -o $(TOP_MODULE)
-	make -C obj_dir -f V$(TOP_MODULE).mk
+compile:
+	@echo "Compiling with $(SIM)..."
+ifeq ($(SIM), verilator)
+	@echo "Running Verilator to build C++ simulation..."
+	$(COMPILE)
+else
+	$(COMPILE)
 endif
-	@echo "Compilation completed successfully!"
+	@echo "✓ Compilation successful"
 
-# Run target
 run: compile
-	@echo "Running simulation with $(SIM) simulator..."
-ifeq ($(SIM),icarus)
-	$(RUN_CMD) $(RUN_FLAGS) $(BUILD_DIR)/$(TOP_MODULE).vvp $(VCD_FLAGS) $(VCD_DIR)/$(TOP_MODULE).vcd
-else ifeq ($(SIM),verilator)
-	./obj_dir/V$(TOP_MODULE)
+	@echo "Running simulation with $(SIM)..."
+	$(RUN)
+	@echo "✓ Simulation completed"
+
+wave: compile
+	@echo "Running simulation with waveform generation..."
+ifeq ($(SIM), iverilog)
+	$(RUN) $(WAVE_OPTS)
+	@echo "✓ Waveform file generated: $(WAVE_FILE)"
+	@echo "  Use 'gtkwave $(WAVE_FILE)' to view waveforms"
+else
+	$(RUN)
+	@echo "✓ Verilator trace files generated in obj_dir/"
 endif
-	@echo "Simulation completed successfully!"
 
 # Test targets
-test_basic: run
-	@echo "Basic test completed successfully!"
+test: run
+	@echo "✓ All tests completed"
 
-test_random: run
-	@echo "Random test completed successfully!"
+test-quick: run
+	@echo "✓ Quick tests completed"
 
-test_all: test_basic test_random
-	@echo "All tests completed successfully!"
-
-# Coverage target (Verilator only)
-coverage: $(COVERAGE_DIR)
-ifeq ($(SIM),verilator)
-	@echo "Running coverage analysis..."
-	$(SIM_CMD) $(COVERAGE_FLAGS) $(TB_FILES) $(RTL_FILES)
-	@echo "Coverage analysis completed!"
-else
-	@echo "Coverage only supported with Verilator simulator"
-	@exit 1
-endif
-
-# Waveform viewing
-waves:
-	@echo "Available waveform files:"
-	@ls -la $(VCD_DIR)/*.vcd 2>/dev/null || echo "No VCD files found"
-	@echo ""
-	@echo "To view waveforms, use:"
-	@echo "  gtkwave $(VCD_DIR)/$(TOP_MODULE).vcd"
-	@echo "  or"
-	@echo "  open $(VCD_DIR)/$(TOP_MODULE).vcd"
+test-full: run
+	@echo "✓ Full tests completed"
 
 # Clean target
 clean:
-	@echo "Cleaning build artifacts..."
-	rm -rf $(BUILD_DIR)
-	rm -rf $(VCD_DIR)
-	rm -rf $(COVERAGE_DIR)
-	rm -rf obj_dir
-	rm -f *.vvp
-	rm -f *.vcd
-	@echo "Clean completed successfully!"
+	@echo "Cleaning simulation artifacts..."
+	rm -rf $(SIM_EXEC) $(ICARUS_EXEC) $(VERILATOR_EXEC) obj_dir/
+	rm -rf coverage csrc *.log *.vpd *.wlf *.key ucli.key
+	rm -rf $(WAVE_FILE) *.vcd
+	rm -rf build/ logs/ waves/
+	@echo "✓ Clean completed"
 
-# Status target
-status:
-	@echo "SystemVerilog Testbench Status:"
-	@echo "==============================="
-	@echo "Simulator: $(SIM)"
-	@echo "Top Module: $(TOP_MODULE)"
-	@echo "RTL Files: $(RTL_FILES)"
-	@echo "Testbench Files: $(TB_FILES)"
-	@echo "Build Directory: $(BUILD_DIR)"
-	@echo "VCD Directory: $(VCD_DIR)"
-	@echo "Coverage Directory: $(COVERAGE_DIR)"
-
-.PHONY: help compile run test_basic test_random test_all coverage waves clean status 
+# Default target
+.DEFAULT_GOAL := help 

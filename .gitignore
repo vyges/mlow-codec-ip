@@ -2,6 +2,47 @@
 runs/
 results/
 
+# Scripts and documentation
+run_ubuntu.sh           # Ubuntu test script (should not be committed)
+docs/*refs.md          # Reference documentation files
+
+# Build directories
+build/                  # Main build directory
+obj_dir/               # Verilator object directory
+
+# Simulation artifacts (Verilog/SystemVerilog)
+*.vcd                   # Waveform files
+*.vvp                   # Icarus Verilog simulation files
+*.vpd                   # VCS waveform files
+*.wlf                   # ModelSim waveform files
+*.key                   # License key files
+*.log                   # Tool log files
+simv                    # VCS simulation executable
+simv.out               # VCS simulation output
+simv.daidir            # VCS simulation directory
+*.o                    # Object files
+*.a                    # Archive files
+*.so                   # Shared object files
+
+# Testbench build artifacts
+tb/sv_tb/build/        # SystemVerilog testbench build directory
+tb/sv_tb/logs/         # Testbench log files
+tb/sv_tb/waves/        # Testbench waveform files
+tb/cocotb/build/       # Cocotb build directory
+tb/cocotb/logs/        # Cocotb log files
+
+# Synthesis artifacts
+flow/synthesis/netlists/  # Synthesis netlists
+flow/synthesis/reports/   # Synthesis reports
+flow/fpga/build/          # FPGA build directory
+flow/fpga/reports/        # FPGA reports
+flow/yosys/build/         # Yosys build directory
+
+# Coverage files
+coverage/               # Coverage data
+*.ucdb                 # Coverage database files
+*.xml                  # Coverage XML files
+
 # Python (cocotb)
 __pycache__/
 *.py[cod]

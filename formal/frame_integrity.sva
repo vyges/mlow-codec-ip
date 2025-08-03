@@ -1,0 +1,187 @@
+//=============================================================================
+// Frame Integrity Assertions - SystemVerilog Assertions (SVA)
+//=============================================================================
+// Description: Formal verification assertions for MLow codec frame integrity
+//              Verifies frame buffering, data consistency, and handshake protocols
+//
+// Author:      Vyges Team
+// Date:        2025-08-03T03:00:00Z
+// Version:     1.0.0
+// License:     Apache-2.0
+//=============================================================================
+
+// Frame Integrity Assertions for MLow Codec
+module frame_integrity_assertions (
+    input  logic        clk_i,
+    input  logic        reset_n_i,
+    
+    // Audio Interface
+    input  logic [15:0] audio_data_i,
+    input  logic        audio_valid_i,
+    input  logic        audio_ready_o,
+    input  logic [15:0] audio_data_o,
+    input  logic        audio_valid_o,
+    input  logic        audio_ready_i,
+    
+    // Frame Interface
+    input  logic [15:0] frame_data_o,
+    input  logic [15:0] frame_data_bus_o [0:15], // Assuming 16-sample frames
+    input  logic        frame_bus_valid_o,
+    input  logic        frame_bus_ready_i,
+    input  logic        frame_valid_o,
+    input  logic        frame_ready_i,
+    
+    // Control Interface
+    input  logic        encode_mode_i,
+    input  logic [3:0]  bitrate_sel_i,
+    input  logic [1:0]  bandwidth_sel_i,
+    
+    // Status Interface
+    input  logic        busy_o,
+    input  logic        error_o,
+    input  logic [7:0]  quality_metric_o
+);
+
+    //=============================================================================
+    // Frame Buffering Integrity Assertions
+    //=============================================================================
+    
+    // A1: Frame completion should trigger frame_valid_o
+    property frame_completion_valid;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (frame_bus_valid_o && frame_bus_ready_i) |-> frame_valid_o;
+    endproperty
+    assert property (frame_completion_valid)
+        else $error("Frame completion should trigger frame_valid_o");
+    
+    // A2: Frame data should be consistent across all outputs
+    property frame_data_consistency;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (frame_bus_valid_o && frame_ready_i) |-> 
+        (frame_data_o == frame_data_bus_o[0]);
+    endproperty
+    assert property (frame_data_consistency)
+        else $error("Frame data should be consistent across outputs");
+    
+    // A3: Frame buffer should not overflow
+    property frame_buffer_no_overflow;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (audio_valid_i && !audio_ready_o) |-> !frame_bus_valid_o;
+    endproperty
+    assert property (frame_buffer_no_overflow)
+        else $error("Frame buffer should not overflow");
+    
+    // A4: Frame processing should complete within reasonable time
+    property frame_processing_timeout;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (frame_bus_valid_o && !frame_ready_i) |-> 
+        ##[1:100] (frame_ready_i || error_o);
+    endproperty
+    assert property (frame_processing_timeout)
+        else $error("Frame processing should complete within 100 cycles");
+    
+    //=============================================================================
+    // Handshake Protocol Assertions
+    //=============================================================================
+    
+    // A5: Audio interface handshake protocol
+    property audio_handshake_protocol;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (audio_valid_i && !audio_ready_o) |-> 
+        ##[1:10] audio_ready_o;
+    endproperty
+    assert property (audio_handshake_protocol)
+        else $error("Audio interface should be ready within 10 cycles");
+    
+    // A6: Frame bus handshake protocol
+    property frame_bus_handshake_protocol;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (frame_bus_valid_o && !frame_bus_ready_i) |-> 
+        ##[1:50] frame_bus_ready_i;
+    endproperty
+    assert property (frame_bus_handshake_protocol)
+        else $error("Frame bus should be ready within 50 cycles");
+    
+    // A7: No simultaneous valid signals without ready
+    property no_valid_without_ready;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (audio_valid_i && !audio_ready_o) |-> 
+        !(frame_bus_valid_o && !frame_bus_ready_i);
+    endproperty
+    assert property (no_valid_without_ready)
+        else $error("No simultaneous valid signals without ready");
+    
+    //=============================================================================
+    // Data Integrity Assertions
+    //=============================================================================
+    
+    // A8: Audio data should not be lost during buffering
+    property audio_data_preservation;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (audio_valid_i && audio_ready_o) |-> 
+        ##[1:FRAME_SIZE] (frame_bus_valid_o || error_o);
+    endproperty
+    assert property (audio_data_preservation)
+        else $error("Audio data should be preserved during buffering");
+    
+    // A9: Frame size should be consistent
+    property frame_size_consistency;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (frame_bus_valid_o) |-> 
+        (frame_data_bus_o[0] != 16'hXXXX && 
+         frame_data_bus_o[FRAME_SIZE-1] != 16'hXXXX);
+    endproperty
+    assert property (frame_size_consistency)
+        else $error("Frame size should be consistent");
+    
+    // A10: Quality metric should be valid when frame is complete
+    property quality_metric_validity;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (frame_bus_valid_o && frame_ready_i) |-> 
+        (quality_metric_o >= 8'd0 && quality_metric_o <= 8'd100);
+    endproperty
+    assert property (quality_metric_validity)
+        else $error("Quality metric should be valid when frame is complete");
+    
+    //=============================================================================
+    // Error Handling Assertions
+    //=============================================================================
+    
+    // A11: Error should not persist indefinitely
+    property error_clearance;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (error_o) |-> ##[1:100] (!error_o || !reset_n_i);
+    endproperty
+    assert property (error_clearance)
+        else $error("Error should not persist indefinitely");
+    
+    // A12: Busy signal should be consistent with processing state
+    property busy_signal_consistency;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (busy_o) |-> 
+        (frame_bus_valid_o || audio_valid_i || frame_valid_o);
+    endproperty
+    assert property (busy_signal_consistency)
+        else $error("Busy signal should be consistent with processing state");
+    
+    //=============================================================================
+    // Coverage Properties
+    //=============================================================================
+    
+    // C1: Frame completion coverage
+    cover property (@(posedge clk_i) 
+        frame_bus_valid_o && frame_bus_ready_i);
+    
+    // C2: Error condition coverage
+    cover property (@(posedge clk_i) 
+        error_o);
+    
+    // C3: Backpressure coverage
+    cover property (@(posedge clk_i) 
+        audio_valid_i && !audio_ready_o);
+    
+    // C4: Full frame processing coverage
+    cover property (@(posedge clk_i) 
+        frame_bus_valid_o && frame_ready_i && !error_o);
+
+endmodule : frame_integrity_assertions 

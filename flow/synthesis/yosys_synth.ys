@@ -1,0 +1,51 @@
+#=============================================================================
+# Yosys Synthesis Script for MLow Audio Codec
+#=============================================================================
+# Description: Yosys synthesis script for MLow audio codec
+#              with CELP encoding/decoding and range encoding.
+#              Follows Vyges conventions for synthesis flow.
+# Author:      Vyges IP Development Team
+# Date:        2025-08-02
+# License:     Apache-2.0
+#=============================================================================
+
+# Read design files
+read_verilog -sv ../../rtl/mlow_codec.sv
+read_verilog -sv ../../rtl/audio_interface.sv
+
+# Set top module
+hierarchy -top mlow_codec
+
+# Check design
+check
+
+# Generate statistics before synthesis
+stat
+
+# Generic synthesis
+synth -top mlow_codec
+
+# Optimize design
+opt -purge
+
+# Technology mapping (generic)
+dfflibmap -liberty +/xilinx/xc7s50csga324-1L/xc7s50csga324-1L.lib
+abc -liberty +/xilinx/xc7s50csga324-1L/xc7s50csga324-1L.lib
+
+# Clean up
+clean
+
+# Generate statistics after synthesis
+stat
+
+# Write netlist
+write_verilog -noattr -noexpr -nohex -nodec ../../flow/synthesis/mlow_codec_synth.v
+
+# Write JSON for further processing
+write_json ../../flow/synthesis/mlow_codec_synth.json
+
+# Generate reports
+tee -o ../../flow/synthesis/synthesis_report.txt stat
+tee -o ../../flow/synthesis/timing_report.txt timing -full
+
+echo "Synthesis completed successfully!" 

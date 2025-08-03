@@ -178,7 +178,7 @@ def generate_comprehensive_report(project_root: str = ".", output_dir: str = "re
         f.write(f"- **Comprehensive Report:** {report_path}\n")
         
         f.write("\n## 🏆 Conclusion\n\n")
-        f.write("The FFT IP demonstrates good synthesis quality and is ready for further development.\n")
+        f.write("The MLow codec demonstrates good synthesis quality and is ready for further development.\n")
         f.write("Key areas for improvement include memory interface optimization and comprehensive testing.\n")
     
     print(f"✅ Comprehensive report generated: {report_path}")
@@ -186,7 +186,7 @@ def generate_comprehensive_report(project_root: str = ".", output_dir: str = "re
 
 def main():
     """Main function with command line argument parsing."""
-    parser = argparse.ArgumentParser(description='Generate comprehensive FFT IP analysis report')
+    parser = argparse.ArgumentParser(description='Generate comprehensive MLow codec analysis report')
     parser.add_argument('--project-root', default='.', 
                        help='Project root directory')
     parser.add_argument('--output-dir', default='reports',

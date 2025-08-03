@@ -125,34 +125,45 @@ def scan_simulation_results():
     verilator_results = []
     cocotb_results = []
     
-    # Look for simulation outputs in tb directory
-    if os.path.exists("tb"):
-        # Check for SystemVerilog simulation outputs in tb/sv_tb
-        if os.path.exists("tb/sv_tb"):
-            # Icarus simulation outputs
-            for file in glob.glob("tb/sv_tb/*.vcd"):
-                icarus_results.append(f"Waveform: {file}")
-            for file in glob.glob("tb/sv_tb/simv*.out"):
-                icarus_results.append(f"Simulation Log: {file}")
-            
-            # Verilator simulation outputs
-            for file in glob.glob("tb/sv_tb/verilator_*_sim"):
-                verilator_results.append(f"Verilator Binary: {file}")
-            for file in glob.glob("tb/sv_tb/verilator_wrapper*.cpp"):
-                verilator_results.append(f"Verilator Wrapper: {file}")
-            for file in glob.glob("tb/sv_tb/obj_dir/*.vcd"):
-                verilator_results.append(f"Verilator Waveform: {file}")
-            
-            # Check for Verilator result file from workflow
-            if os.path.exists("tb/sv_tb/verilator_results.txt"):
-                try:
-                    with open("tb/sv_tb/verilator_results.txt", 'r') as f:
-                        result = f.read().strip()
-                        verilator_results.append(f"Verilator Test Result: {result}")
-                except:
-                    verilator_results.append("Verilator Test Result: Result file found but could not read")
-            else:
-                verilator_results.append("No Verilator results found")
+    # Check for SystemVerilog simulation outputs in build directory
+    if os.path.exists("build"):
+        # Check build/waveforms for VCD files
+        for file in glob.glob("build/waveforms/*.vcd"):
+            icarus_results.append(f"Waveform: {file}")
+        # Check build/simulation for simulation files
+        for file in glob.glob("build/simulation/*.vvp"):
+            icarus_results.append(f"Simulation: {file}")
+        for file in glob.glob("build/simulation/obj_dir/*.vcd"):
+            verilator_results.append(f"Verilator Waveform: {file}")
+        for file in glob.glob("build/logs/*.log"):
+            icarus_results.append(f"Log: {file}")
+    
+    # Also check legacy locations for backward compatibility
+    if os.path.exists("tb/sv_tb"):
+        # Icarus simulation outputs
+        for file in glob.glob("tb/sv_tb/*.vcd"):
+            icarus_results.append(f"Waveform (legacy): {file}")
+        for file in glob.glob("tb/sv_tb/simv*.out"):
+            icarus_results.append(f"Simulation Log (legacy): {file}")
+        
+        # Verilator simulation outputs
+        for file in glob.glob("tb/sv_tb/verilator_*_sim"):
+            verilator_results.append(f"Verilator Binary (legacy): {file}")
+        for file in glob.glob("tb/sv_tb/verilator_wrapper*.cpp"):
+            verilator_results.append(f"Verilator Wrapper (legacy): {file}")
+        for file in glob.glob("tb/sv_tb/obj_dir/*.vcd"):
+            verilator_results.append(f"Verilator Waveform (legacy): {file}")
+        
+        # Check for Verilator result file from workflow
+        if os.path.exists("tb/sv_tb/verilator_results.txt"):
+            try:
+                with open("tb/sv_tb/verilator_results.txt", 'r') as f:
+                    result = f.read().strip()
+                    verilator_results.append(f"Verilator Test Result: {result}")
+            except:
+                verilator_results.append("Verilator Test Result: Result file found but could not read")
+        else:
+            verilator_results.append("No Verilator results found")
         
         # Check for cocotb simulation outputs
         if os.path.exists("tb/cocotb"):

@@ -1,0 +1,48 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2025  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.55 (git sha1 60f126cd00c94892782470192d6c9f7abebe7c05, clang++ 17.0.0 -fPIC -O3)
+
+-- Running command `read_verilog -sv ../../rtl/audio_interface.sv ../../rtl/mlow_codec.sv; hierarchy -top mlow_codec; synth -top mlow_codec; stat' --
+
+1. Executing Verilog-2005 frontend: ../../rtl/audio_interface.sv
+Parsing SystemVerilog input from `../../rtl/audio_interface.sv' to AST representation.
+Generating RTLIL representation for module `\audio_interface'.
+Successfully finished Verilog frontend.
+
+2. Executing Verilog-2005 frontend: ../../rtl/mlow_codec.sv
+Parsing SystemVerilog input from `../../rtl/mlow_codec.sv' to AST representation.
+Generating RTLIL representation for module `\mlow_codec'.
+Successfully finished Verilog frontend.
+
+3. Executing HIERARCHY pass (managing design hierarchy).
+
+3.1. Analyzing design hierarchy..
+Top module:  \mlow_codec
+Used module:     \audio_interface
+Parameter \SAMPLE_RATE = 48000
+Parameter \FRAME_SIZE = 480
+
+3.2. Executing AST frontend in derive mode using pre-parsed AST for module `\audio_interface'.
+Parameter \SAMPLE_RATE = 48000
+Parameter \FRAME_SIZE = 480
+Generating RTLIL representation for module `$paramod$8b4c96c41531a2f873dfbfe043763e87f687a208\audio_interface'.
+
+3.3. Analyzing design hierarchy..
+Top module:  \mlow_codec
+Used module:     $paramod$8b4c96c41531a2f873dfbfe043763e87f687a208\audio_interface
+
+3.4. Analyzing design hierarchy..
+Top module:  \mlow_codec
+Used module:     $paramod$8b4c96c41531a2f873dfbfe043763e87f687a208\audio_interface
+Removing unused module `\audio_interface'.
+Removed 1 unused modules.
+
+4. Executing SYNTH pass.
+
+4.1. Executing HIERARCHY pass (managing design hierarchy).
+
+4.1.1. Analyzing design hierarchy..

@@ -1,0 +1,278 @@
+//=============================================================================
+// Handshake Protocol Assertions - SystemVerilog Assertions (SVA)
+//=============================================================================
+// Description: Formal verification assertions for MLow codec handshake protocols
+//              Verifies valid/ready handshaking, flow control, and protocol compliance
+//
+// Author:      Vyges Team
+// Date:        2025-08-03T03:00:00Z
+// Version:     1.0.0
+// License:     Apache-2.0
+//=============================================================================
+
+// Handshake Protocol Assertions for MLow Codec
+module handshake_protocol_assertions (
+    input  logic        clk_i,
+    input  logic        reset_n_i,
+    
+    // Audio Interface Handshake
+    input  logic [15:0] audio_data_i,
+    input  logic        audio_valid_i,
+    input  logic        audio_ready_o,
+    input  logic [15:0] audio_data_o,
+    input  logic        audio_valid_o,
+    input  logic        audio_ready_i,
+    
+    // Frame Interface Handshake
+    input  logic [15:0] frame_data_o,
+    input  logic [15:0] frame_data_bus_o [0:15],
+    input  logic        frame_bus_valid_o,
+    input  logic        frame_bus_ready_i,
+    input  logic        frame_valid_o,
+    input  logic        frame_ready_i,
+    
+    // Packet Interface Handshake
+    input  logic [7:0]  packet_data_io,
+    input  logic        packet_valid_o,
+    input  logic        packet_ready_i,
+    input  logic        packet_start_o,
+    input  logic        packet_end_o,
+    
+    // Encoder/Decoder Handshake
+    input  logic        encoder_busy_o,
+    input  logic        encoder_error_o,
+    input  logic        decoder_busy_o,
+    input  logic        decoder_error_o,
+    
+    // Control Interface
+    input  logic        encode_mode_i,
+    input  logic [3:0]  bitrate_sel_i,
+    input  logic [1:0]  bandwidth_sel_i
+);
+
+    //=============================================================================
+    // Audio Interface Handshake Assertions
+    //=============================================================================
+    
+    // H1: Valid signal should not be asserted without data
+    property audio_valid_with_data;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        audio_valid_i |-> (audio_data_i != 16'hXXXX);
+    endproperty
+    assert property (audio_valid_with_data)
+        else $error("Audio valid should not be asserted without valid data");
+    
+    // H2: Ready signal should be stable during transfer
+    property audio_ready_stability;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (audio_valid_i && audio_ready_o) |-> 
+        ##[1:2] audio_ready_o;
+    endproperty
+    assert property (audio_ready_stability)
+        else $error("Audio ready should be stable during transfer");
+    
+    // H3: Data should be sampled only when both valid and ready are high
+    property audio_data_sampling;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (audio_valid_i && audio_ready_o) |-> 
+        ##[1:FRAME_SIZE] (frame_bus_valid_o || encoder_error_o);
+    endproperty
+    assert property (audio_data_sampling)
+        else $error("Audio data should be sampled when valid and ready are high");
+    
+    // H4: No backpressure deadlock
+    property audio_no_deadlock;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (audio_valid_i && !audio_ready_o) |-> 
+        ##[1:100] audio_ready_o;
+    endproperty
+    assert property (audio_no_deadlock)
+        else $error("Audio interface should not deadlock");
+    
+    //=============================================================================
+    // Frame Interface Handshake Assertions
+    //=============================================================================
+    
+    // H5: Frame bus valid should only be asserted with complete frame
+    property frame_bus_valid_complete;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        frame_bus_valid_o |-> 
+        (frame_data_bus_o[0] != 16'hXXXX && 
+         frame_data_bus_o[FRAME_SIZE-1] != 16'hXXXX);
+    endproperty
+    assert property (frame_bus_valid_complete)
+        else $error("Frame bus valid should only be asserted with complete frame");
+    
+    // H6: Frame ready should be asserted when frame is available
+    property frame_ready_availability;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        frame_bus_valid_o |-> ##[1:10] frame_bus_ready_i;
+    endproperty
+    assert property (frame_ready_availability)
+        else $error("Frame ready should be asserted when frame is available");
+    
+    // H7: Frame transfer should complete within reasonable time
+    property frame_transfer_completion;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (frame_bus_valid_o && frame_bus_ready_i) |-> 
+        ##[1:50] (!frame_bus_valid_o || !frame_bus_ready_i);
+    endproperty
+    assert property (frame_transfer_completion)
+        else $error("Frame transfer should complete within 50 cycles");
+    
+    // H8: No frame data corruption during transfer
+    property frame_data_integrity;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (frame_bus_valid_o && frame_bus_ready_i) |-> 
+        (frame_data_o == frame_data_bus_o[0]);
+    endproperty
+    assert property (frame_data_integrity)
+        else $error("Frame data should not be corrupted during transfer");
+    
+    //=============================================================================
+    // Packet Interface Handshake Assertions
+    //=============================================================================
+    
+    // H9: Packet start should be asserted before packet data
+    property packet_start_before_data;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (packet_valid_o && packet_ready_i) |-> 
+        (packet_start_o || $past(packet_start_o, 1));
+    endproperty
+    assert property (packet_start_before_data)
+        else $error("Packet start should be asserted before packet data");
+    
+    // H10: Packet end should be asserted after packet data
+    property packet_end_after_data;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        packet_end_o |-> 
+        $past(packet_valid_o, 1) || $past(packet_valid_o, 2);
+    endproperty
+    assert property (packet_end_after_data)
+        else $error("Packet end should be asserted after packet data");
+    
+    // H11: Packet valid should not be asserted without ready
+    property packet_valid_with_ready;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        packet_valid_o |-> ##[1:10] packet_ready_i;
+    endproperty
+    assert property (packet_valid_with_ready)
+        else $error("Packet valid should not be asserted without ready");
+    
+    // H12: Packet data should be valid when packet_valid_o is high
+    property packet_data_validity;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        packet_valid_o |-> (packet_data_io != 8'hXX);
+    endproperty
+    assert property (packet_data_validity)
+        else $error("Packet data should be valid when packet_valid_o is high");
+    
+    //=============================================================================
+    // Encoder/Decoder Handshake Assertions
+    //=============================================================================
+    
+    // H13: Encoder busy should be consistent with processing state
+    property encoder_busy_consistency;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        encoder_busy_o |-> 
+        (frame_bus_valid_o || audio_valid_i);
+    endproperty
+    assert property (encoder_busy_consistency)
+        else $error("Encoder busy should be consistent with processing state");
+    
+    // H14: Decoder busy should be consistent with processing state
+    property decoder_busy_consistency;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        decoder_busy_o |-> 
+        (packet_valid_o || frame_valid_o);
+    endproperty
+    assert property (decoder_busy_consistency)
+        else $error("Decoder busy should be consistent with processing state");
+    
+    // H15: Error signals should not be asserted simultaneously with busy
+    property error_busy_mutual_exclusion;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (encoder_error_o || decoder_error_o) |-> 
+        !(encoder_busy_o || decoder_busy_o);
+    endproperty
+    assert property (error_busy_mutual_exclusion)
+        else $error("Error signals should not be asserted with busy");
+    
+    // H16: Mode switching should be handled gracefully
+    property mode_switching_handling;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        ($changed(encode_mode_i)) |-> 
+        ##[1:20] (!encoder_busy_o && !decoder_busy_o);
+    endproperty
+    assert property (mode_switching_handling)
+        else $error("Mode switching should be handled gracefully");
+    
+    //=============================================================================
+    // Flow Control Assertions
+    //=============================================================================
+    
+    // H17: No flow control deadlock in audio path
+    property audio_flow_control;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (audio_valid_i && !audio_ready_o) |-> 
+        ##[1:50] (audio_ready_o || !audio_valid_i);
+    endproperty
+    assert property (audio_flow_control)
+        else $error("Audio flow control should not deadlock");
+    
+    // H18: No flow control deadlock in frame path
+    property frame_flow_control;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (frame_bus_valid_o && !frame_bus_ready_i) |-> 
+        ##[1:100] (frame_bus_ready_i || !frame_bus_valid_o);
+    endproperty
+    assert property (frame_flow_control)
+        else $error("Frame flow control should not deadlock");
+    
+    // H19: No flow control deadlock in packet path
+    property packet_flow_control;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (packet_valid_o && !packet_ready_i) |-> 
+        ##[1:200] (packet_ready_i || !packet_valid_o);
+    endproperty
+    assert property (packet_flow_control)
+        else $error("Packet flow control should not deadlock");
+    
+    // H20: Backpressure should propagate correctly
+    property backpressure_propagation;
+        @(posedge clk_i) disable iff (!reset_n_i)
+        (!frame_bus_ready_i) |-> 
+        ##[1:10] (!audio_ready_o);
+    endproperty
+    assert property (backpressure_propagation)
+        else $error("Backpressure should propagate correctly");
+    
+    //=============================================================================
+    // Coverage Properties
+    //=============================================================================
+    
+    // C1: Audio handshake coverage
+    cover property (@(posedge clk_i) 
+        audio_valid_i && audio_ready_o);
+    
+    // C2: Frame handshake coverage
+    cover property (@(posedge clk_i) 
+        frame_bus_valid_o && frame_bus_ready_i);
+    
+    // C3: Packet handshake coverage
+    cover property (@(posedge clk_i) 
+        packet_valid_o && packet_ready_i);
+    
+    // C4: Backpressure coverage
+    cover property (@(posedge clk_i) 
+        audio_valid_i && !audio_ready_o);
+    
+    // C5: Error condition coverage
+    cover property (@(posedge clk_i) 
+        encoder_error_o || decoder_error_o);
+    
+    // C6: Mode switching coverage
+    cover property (@(posedge clk_i) 
+        $changed(encode_mode_i));
+
+endmodule : handshake_protocol_assertions 
