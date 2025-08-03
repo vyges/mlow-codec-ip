@@ -97,9 +97,15 @@ def extract_test_data():
         'success_rate': '100.0'
     }
     
-    if os.path.exists('test_harness_report.md'):
-        with open('test_harness_report.md', 'r') as f:
-            content = f.read()
+    # Check multiple possible locations for test harness report
+    test_report_paths = ['public/test_harness_report.md', 'test_harness_report.md']
+    content = ""
+    
+    for path in test_report_paths:
+        if os.path.exists(path):
+            with open(path, 'r') as f:
+                content = f.read()
+            break
             
         # Extract test counts
         test_cases_match = re.search(r'Test Cases:\s*(\d+)', content)
@@ -129,12 +135,21 @@ def extract_gate_analysis():
         'die_size': 'N/A'
     }
     
-    # Check for gate analysis report in flow/yosys
-    gate_report_path = 'flow/yosys/gate_analysis_report.md'
-    if os.path.exists(gate_report_path):
-        with open(gate_report_path, 'r') as f:
-            content = f.read()
+    # Check multiple possible locations for gate analysis report
+    gate_report_paths = [
+        'public/gate_analysis_report.md',
+        'flow/yosys/gate_analysis_report.md',
+        'flow/yosys/reports/gate_analysis_report.md'
+    ]
+    
+    content = ""
+    for gate_report_path in gate_report_paths:
+        if os.path.exists(gate_report_path):
+            with open(gate_report_path, 'r') as f:
+                content = f.read()
+            break
             
+    if content:
         # Extract total gates
         gates_match = re.search(r'\*\*Primitive Gates\*\*:\s*([\d,]+)', content)
         if gates_match:
@@ -152,21 +167,30 @@ def extract_gate_analysis():
             else:
                 gate_data['die_size'] = f"{die_size_mm2:.1f}mm²"
     
-    # Also check for comprehensive report
-    comp_report_path = 'flow/yosys/reports/comprehensive_report.md'
-    if os.path.exists(comp_report_path):
-        with open(comp_report_path, 'r') as f:
-            content = f.read()
+    # Also check for comprehensive report in multiple locations
+    comp_report_paths = [
+        'public/comprehensive_analysis_report.md',
+        'flow/yosys/reports/comprehensive_report.md',
+        'reports/comprehensive_analysis_report.md'
+    ]
+    
+    comp_content = ""
+    for comp_report_path in comp_report_paths:
+        if os.path.exists(comp_report_path):
+            with open(comp_report_path, 'r') as f:
+                comp_content = f.read()
+            break
             
+    if comp_content:
         # Extract total gates if not found in main report
         if gate_data['total_gates'] == '0':
-            gates_match = re.search(r'\*\*Primitive Gates\*\*:\s*([\d,]+)', content)
+            gates_match = re.search(r'\*\*Primitive Gates\*\*:\s*([\d,]+)', comp_content)
             if gates_match:
                 gate_data['total_gates'] = gates_match.group(1)
                 
         # Extract transistor count if not found in main report
         if gate_data['die_size'] == 'N/A':
-            transistors_match = re.search(r'\*\*Estimated Transistors\*\*:\s*([\d,]+)', content)
+            transistors_match = re.search(r'\*\*Estimated Transistors\*\*:\s*([\d,]+)', comp_content)
             if transistors_match:
                 transistors = int(transistors_match.group(1).replace(',', ''))
                 die_size_mm2 = transistors / 10000  # Rough estimate
@@ -188,9 +212,15 @@ def extract_code_metrics():
         'die_size': 'N/A'
     }
     
-    if os.path.exists('code_kpis.txt'):
-        with open('code_kpis.txt', 'r') as f:
-            content = f.read()
+    # Check multiple possible locations for code KPIs
+    kpis_paths = ['public/code_kpis.txt', 'code_kpis.txt']
+    content = ""
+    
+    for path in kpis_paths:
+        if os.path.exists(path):
+            with open(path, 'r') as f:
+                content = f.read()
+            break
             
         # Extract RTL files
         rtl_match = re.search(r'RTL Files:\s*(\d+)', content)
