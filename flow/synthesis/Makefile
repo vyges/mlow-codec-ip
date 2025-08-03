@@ -36,8 +36,8 @@ synth_individual: create_dirs
 	@echo ""
 	@echo "1. audio_interface:"
 	$(YOSYS_CMD) -p "read_verilog -sv $(RTL_DIR)/audio_interface.sv; hierarchy -top audio_interface; synth -top audio_interface; stat" | tee $(REPORTS_DIR)/audio_interface_stats.txt && echo "PASS" || echo "FAIL"
-	@echo "2. mlow_codec (with audio_interface):"
-	$(YOSYS_CMD) -p "read_verilog -sv $(RTL_DIR)/audio_interface.sv $(RTL_DIR)/mlow_codec.sv; hierarchy -top mlow_codec; synth -top mlow_codec; stat" | tee $(REPORTS_DIR)/mlow_codec_stats.txt && echo "PASS" || echo "FAIL"
+	@echo "2. mlow_codec (with all modules):"
+	$(YOSYS_CMD) -p "read_verilog -sv $(RTL_DIR)/audio_interface.sv $(RTL_DIR)/mlow_codec.sv $(RTL_DIR)/mlow_encoder.sv $(RTL_DIR)/mlow_decoder.sv $(RTL_DIR)/packet_framer.sv; hierarchy -top mlow_codec; synth -top mlow_codec; stat" | tee $(REPORTS_DIR)/mlow_codec_stats.txt && echo "PASS" || echo "FAIL"
 	@echo ""
 	@echo "=== Individual Module Synthesis Complete ==="
 	@echo "Detailed statistics saved to $(REPORTS_DIR)/*_stats.txt"
@@ -46,7 +46,7 @@ synth_individual: create_dirs
 synth_simple: create_dirs
 	@echo "Running simplified synthesis for individual modules..."
 	@echo "Step 1: Synthesizing mlow_codec..."
-	./timeout_wrapper.sh 30 "$(YOSYS_CMD) $(YOSYS_FLAGS) -p 'read_verilog -sv $(RTL_DIR)/mlow_codec.sv; hierarchy -top mlow_codec; synth -top mlow_codec; stat'" || (echo "mlow_codec synthesis failed or timed out"; exit 1)
+	./timeout_wrapper.sh 30 "$(YOSYS_CMD) $(YOSYS_FLAGS) -p 'read_verilog -sv $(RTL_DIR)/mlow_codec.sv $(RTL_DIR)/audio_interface.sv $(RTL_DIR)/mlow_encoder.sv $(RTL_DIR)/mlow_decoder.sv $(RTL_DIR)/packet_framer.sv; hierarchy -top mlow_codec; synth -top mlow_codec; stat'" || (echo "mlow_codec synthesis failed or timed out"; exit 1)
 	@echo "Step 2: Synthesizing audio_interface..."
 	./timeout_wrapper.sh 30 "$(YOSYS_CMD) $(YOSYS_FLAGS) -p 'read_verilog -sv $(RTL_DIR)/audio_interface.sv; hierarchy -top audio_interface; synth -top audio_interface; stat'" || (echo "audio_interface synthesis failed or timed out"; exit 1)
 	@echo "Simplified synthesis completed!"
@@ -60,7 +60,7 @@ synth_full: create_dirs
 # Generic synthesis (no technology mapping)
 synth_generic: create_dirs
 	@echo "Running generic synthesis..."
-	$(YOSYS_CMD) $(YOSYS_FLAGS) -p "read_verilog -sv $(RTL_DIR)/mlow_codec.sv $(RTL_DIR)/audio_interface.sv; hierarchy -top mlow_codec; check; stat; synth -top mlow_codec; opt -purge; clean; stat; write_verilog -noattr -noexpr -nohex -nodec $(NETLISTS_DIR)/mlow_codec_generic.v"
+	$(YOSYS_CMD) $(YOSYS_FLAGS) -p "read_verilog -sv $(RTL_DIR)/mlow_codec.sv $(RTL_DIR)/audio_interface.sv $(RTL_DIR)/mlow_encoder.sv $(RTL_DIR)/mlow_decoder.sv $(RTL_DIR)/packet_framer.sv; hierarchy -top mlow_codec; check; stat; synth -top mlow_codec; opt -purge; clean; stat; write_verilog -noattr -noexpr -nohex -nodec $(NETLISTS_DIR)/mlow_codec_generic.v"
 	@echo "Generic synthesis completed!"
 
 # Comprehensive synthesis test

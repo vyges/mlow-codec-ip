@@ -12,6 +12,9 @@
 # Read design files
 read_verilog -sv ../../rtl/mlow_codec.sv
 read_verilog -sv ../../rtl/audio_interface.sv
+read_verilog -sv ../../rtl/mlow_encoder.sv
+read_verilog -sv ../../rtl/mlow_decoder.sv
+read_verilog -sv ../../rtl/packet_framer.sv
 
 # Set top module
 hierarchy -top mlow_codec

@@ -1,5 +1,16 @@
 # MLow Audio Codec IP
 
+[![Vyges IP](https://img.shields.io/badge/Vyges-IP%20Template-blue?style=flat&logo=github)](https://vyges.com)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
+[![Maturity](https://img.shields.io/badge/Maturity-Development-orange)](https://vyges.com/docs/maturity-levels)
+[![Target](https://img.shields.io/badge/Target-ASIC%20%7C%20FPGA-orange)](https://vyges.com/docs/target-platforms)
+[![Verification](https://img.shields.io/badge/Verification-Cocotb%20%7C%20SystemVerilog-purple)](https://vyges.com/docs/verification)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-blue?style=flat&logo=github)](https://vyges.github.io/mlow-codec-ip/)
+[![Repository](https://img.shields.io/badge/Repository-GitHub-black?style=flat&logo=github)](https://github.com/vyges/mlow-codec-ip)
+[![Issues](https://img.shields.io/badge/Issues-GitHub-orange?style=flat&logo=github)](https://github.com/vyges/mlow-codec-ip/issues)
+[![Pull Requests](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat&logo=github)](https://github.com/vyges/mlow-codec-ip/pulls)
+[![Build Status](https://github.com/vyges/mlow-codec-ip/workflows/Build%20and%20Test%20MLow%20Codec%20IP/badge.svg)](https://github.com/vyges/mlow-codec-ip/actions)
+
 **Version:** 1.0.0  
 **Date:** 2025-08-03T03:00:00Z  
 **Author:** Vyges Team  
