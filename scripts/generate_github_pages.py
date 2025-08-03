@@ -60,12 +60,57 @@ def extract_ip_metadata():
             elif 'description' in data:
                 metadata['project_overview'] = data['description']
                 
-            # Extract key features
-            if 'features' in data and isinstance(data['features'], list):
-                metadata['key_features'] = data['features']
+            # Extract key features from metadata
+            if 'implementation_strategy' in data:
+                impl_strategy = data['implementation_strategy']
+                feature_descriptions = []
                 
-            # Extract RTL modules from structure
-            if 'structure' in data and 'modules' in data['structure']:
+                # Extract features from simplified version
+                if 'simplified_version' in impl_strategy and 'features' in impl_strategy['simplified_version']:
+                    for feature in impl_strategy['simplified_version']['features']:
+                        if feature == 'core_functionality':
+                            feature_descriptions.append('Core MLow codec functionality')
+                        elif feature == 'fpga_ready':
+                            feature_descriptions.append('FPGA-ready implementation')
+                        elif feature == 'open_source_tools':
+                            feature_descriptions.append('Open-source toolchain support')
+                        else:
+                            feature_descriptions.append(feature.replace('_', ' ').title())
+                
+                # Extract features from full version
+                if 'full_version' in impl_strategy and 'features' in impl_strategy['full_version']:
+                    for feature in impl_strategy['full_version']['features']:
+                        if feature == 'complete_feature_set':
+                            feature_descriptions.append('Complete feature set')
+                        elif feature == 'advanced_verification':
+                            feature_descriptions.append('Advanced verification capabilities')
+                        elif feature == 'commercial_tools':
+                            feature_descriptions.append('Commercial tool support')
+                        else:
+                            feature_descriptions.append(feature.replace('_', ' ').title())
+                
+                if feature_descriptions:
+                    metadata['key_features'] = feature_descriptions
+                
+            # Extract RTL modules from metadata
+            if 'implementation_strategy' in data:
+                impl_strategy = data['implementation_strategy']
+                all_modules = []
+                
+                # Extract modules from simplified version
+                if 'simplified_version' in impl_strategy and 'modules' in impl_strategy['simplified_version']:
+                    all_modules.extend(impl_strategy['simplified_version']['modules'])
+                
+                # Extract modules from full version
+                if 'full_version' in impl_strategy and 'modules' in impl_strategy['full_version']:
+                    all_modules.extend(impl_strategy['full_version']['modules'])
+                
+                # Remove duplicates and format
+                unique_modules = list(set(all_modules))
+                metadata['rtl_modules'] = [f"{module} - {module.replace('.sv', '').replace('_', ' ').title()}" for module in unique_modules]
+            elif 'modules' in data and isinstance(data['modules'], list):
+                metadata['rtl_modules'] = [f"{module} - {module.replace('.sv', '').replace('_', ' ').title()}" for module in data['modules']]
+            elif 'structure' in data and 'modules' in data['structure']:
                 modules = data['structure']['modules']
                 if isinstance(modules, list):
                     metadata['rtl_modules'] = [f"{module} - {module.replace('_', ' ').title()}" for module in modules]
@@ -92,9 +137,9 @@ def extract_ip_metadata():
 def extract_test_data():
     """Extract test results data from test_harness_report.md"""
     test_data = {
-        'total_tests': '23',
-        'passed_tests': '23', 
-        'success_rate': '100.0'
+        'total_tests': '0',
+        'passed_tests': '0', 
+        'success_rate': '0.0'
     }
     
     # Check multiple possible locations for test harness report
@@ -106,13 +151,14 @@ def extract_test_data():
             with open(path, 'r') as f:
                 content = f.read()
             break
-            
+    
+    if content:
         # Extract test counts
-        test_cases_match = re.search(r'Test Cases:\s*(\d+)', content)
+        test_cases_match = re.search(r'\*\*Total Test Cases\*\*:\s*(\d+)', content)
         if test_cases_match:
             test_data['total_tests'] = test_cases_match.group(1)
             
-        passed_match = re.search(r'Passed:\s*(\d+)', content)
+        passed_match = re.search(r'\*\*Passed\*\*:\s*(\d+)', content)
         if passed_match:
             test_data['passed_tests'] = passed_match.group(1)
             
@@ -204,10 +250,10 @@ def extract_gate_analysis():
 def extract_code_metrics():
     """Extract code metrics from code_kpis.txt"""
     metrics = {
-        'rtl_files': '16',
-        'rtl_lines': '12,567',
-        'test_files': '9',
-        'overall_score': '88.8',
+        'rtl_files': '0',
+        'rtl_lines': '0',
+        'test_files': '0',
+        'overall_score': '0',
         'total_gates': '0',
         'die_size': 'N/A'
     }
@@ -221,7 +267,8 @@ def extract_code_metrics():
             with open(path, 'r') as f:
                 content = f.read()
             break
-            
+    
+    if content:
         # Extract RTL files
         rtl_match = re.search(r'RTL Files:\s*(\d+)', content)
         if rtl_match:

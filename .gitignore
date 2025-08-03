@@ -152,3 +152,4 @@ analog/macros/          # Symbolic links to other projects
 *.orig
 
 update_ai_context.sh
+public/index.html

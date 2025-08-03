@@ -1144,6 +1144,15 @@ jobs:
           set -e
           echo "🌐 Creating GitHub Pages index..."
           
+          # Ensure vyges-metadata.json is available for the script
+          echo "📋 Copying metadata file to public directory..."
+          if [ -f "vyges-metadata.json" ]; then
+            cp vyges-metadata.json public/
+            echo "✅ Metadata file copied"
+          else
+            echo "⚠️ vyges-metadata.json not found"
+          fi
+          
           # Generate dynamic index.html using Python script
           echo "📄 Generating index.html from template..."
           if [ -f "scripts/generate_github_pages.py" ]; then
@@ -1158,7 +1167,7 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: vyges-ip-template-build-artifacts
+          name: mlow-codec-ip-build-artifacts
           path: |
             test_harness_report.md
             scripts/
@@ -1178,7 +1187,7 @@ jobs:
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
         run: |
-          echo "🚀 Deploying template reports to GitHub Pages..."
+          echo "🚀 Deploying MLow Codec IP reports to GitHub Pages..."
           
           # Configure git for deployment with proper authentication
           git config --global user.name "github-actions[bot]"
@@ -1205,7 +1214,7 @@ jobs:
             
             # Commit and push
             git add .
-            git commit -m "Update template reports - $(date -u)" || echo "No changes to commit"
+            git commit -m "Update MLow Codec IP reports - $(date -u)" || echo "No changes to commit"
             git push origin gh-pages
             
             echo "✅ GitHub Pages deployment complete!"
@@ -1224,19 +1233,19 @@ jobs:
             
             # Create and push gh-pages branch
             git add .
-            git commit -m "Initial template reports - $(date -u)"
+            git commit -m "Initial MLow Codec IP reports - $(date -u)"
             git branch -M gh-pages
             git push -u origin gh-pages
             
             echo "✅ GitHub Pages deployment complete!"
           fi
           
-          echo "📖 Template reports available at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          echo "📖 MLow Codec IP reports available at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
 
       - name: Workflow status
         run: |
-          echo "🎉 Template workflow completed successfully!"
-          echo "This template repository is ready for IP development."
+          echo "🎉 MLow Codec IP workflow completed successfully!"
+          echo "MLow Codec IP development and testing complete."
           echo ""
           echo "Next steps:"
           echo "1. Use 'Use this template' to create a new repository"
