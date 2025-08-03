@@ -1,0 +1,590 @@
+{
+  "project_info": {
+    "project_name": "",
+    "analysis_date": "2025-08-03T16:06:36.997000",
+    "project_root": "/home/runner/work/mlow-codec-ip/mlow-codec-ip",
+    "git_repo": "/home/runner/work/mlow-codec-ip/mlow-codec-ip",
+    "git_status": "dirty"
+  },
+  "file_structure": {
+    "total_files": 166,
+    "total_directories": 48,
+    "file_types": {
+      ".md": 24,
+      ".vcd": 2,
+      ".json": 7,
+      "no_extension": 34,
+      ".mk": 4,
+      ".d": 9,
+      ".h": 8,
+      ".cpp": 26,
+      ".dat": 2,
+      ".vvp": 3,
+      ".o": 6,
+      ".a": 1,
+      ".sv": 11,
+      ".sva": 2,
+      ".html": 2,
+      ".css": 1,
+      ".tcl": 2,
+      ".sh": 5,
+      ".cfg": 1,
+      ".v": 2,
+      ".ys": 2,
+      ".txt": 3,
+      ".pcf": 1,
+      ".py": 7,
+      ".f": 1
+    },
+    "directory_structure": {
+      "root": {
+        "files": [
+          "test_harness_report.md",
+          ".copilot-chat-context.md",
+          "tb_mlow_codec_verilator.vcd",
+          "vyges-metadata.template.json",
+          "install_tools.md",
+          ".vyges-ai-context.json",
+          "Developer_Guide.md",
+          "README.md",
+          "Makefile",
+          "NOTICE",
+          "LICENSE",
+          ".cursorrules",
+          "LICENSE_SCOPE.md",
+          ".gitignore",
+          "vyges-metadata.json"
+        ],
+        "subdirectories": [
+          "obj_dir",
+          "analog",
+          "docs",
+          "build",
+          "formal",
+          "test",
+          "layout",
+          ".github",
+          "public",
+          "rtl",
+          "flow",
+          "simulation",
+          ".git",
+          "integration",
+          "scripts",
+          "packaging",
+          "tb"
+        ]
+      },
+      "obj_dir": {
+        "files": [
+          "Vformal_testbench_classes.mk",
+          "formal_main.d",
+          "Vformal_testbench__ver.d",
+          "Vformal_testbench__Syms.h",
+          "Vformal_testbench.h",
+          "Vformal_testbench__Trace__0__Slow.cpp",
+          "Vformal_testbench__pch.h",
+          "Vformal_testbench__Syms.cpp",
+          "Vformal_testbench___024root__DepSet_hbbd0a4ab__0__Slow.cpp",
+          "Vformal_testbench___024root.h",
+          "Vformal_testbench__TraceDecls__0__Slow.cpp",
+          "Vformal_testbench__Trace__0.cpp",
+          "Vformal_testbench___024root__DepSet_hbbd0a4ab__0.cpp",
+          "Vformal_testbench.cpp",
+          "Vformal_testbench___024root__DepSet_hb00dd036__0.cpp",
+          "Vformal_testbench___024root__DepSet_hb00dd036__0__Slow.cpp",
+          "Vformal_testbench__verFiles.dat",
+          "Vformal_testbench___024root__Slow.cpp",
+          "Vformal_testbench__ConstPool_0.cpp",
+          "Vformal_testbench.mk"
+        ],
+        "subdirectories": []
+      },
+      "analog": {
+        "files": [
+          "README.md"
+        ],
+        "subdirectories": [
+          "gds",
+          "macros",
+          "xschem",
+          "lef",
+          "netlist",
+          "magic"
+        ]
+      },
+      "analog/gds": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "analog/macros": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "analog/xschem": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "analog/lef": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "analog/netlist": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "analog/magic": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "docs": {
+        "files": [
+          "overview.md",
+          "testbench.md",
+          "mlow_refs.md",
+          "waveforms.md",
+          "architecture.md"
+        ],
+        "subdirectories": [
+          "images"
+        ]
+      },
+      "docs/images": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "build": {
+        "files": [],
+        "subdirectories": [
+          "waveforms",
+          "simulation"
+        ]
+      },
+      "build/waveforms": {
+        "files": [
+          "tb_mlow_codec.vcd"
+        ],
+        "subdirectories": []
+      },
+      "build/simulation": {
+        "files": [
+          "tb_mlow_codec_comprehensive.vvp",
+          "tb_mlow_codec.vvp"
+        ],
+        "subdirectories": [
+          "obj_dir"
+        ]
+      },
+      "build/simulation/obj_dir": {
+        "files": [
+          "Vtb_mlow_codec_verilator__ver.d",
+          "Vtb_mlow_codec_verilator__verFiles.dat",
+          "Vtb_mlow_codec_verilator_classes.mk",
+          "verilated_threads.d",
+          "verilated_threads.o",
+          "verilated_vcd_c.o",
+          "Vtb_mlow_codec_verilator___024root__DepSet_hebb61af4__0.cpp",
+          "verilated_vcd_c.d",
+          "Vtb_mlow_codec_verilator",
+          "Vtb_mlow_codec_verilator__ALL.o",
+          "Vtb_mlow_codec_verilator.mk",
+          "Vtb_mlow_codec_verilator___024root.h",
+          "Vtb_mlow_codec_verilator___024root__Slow.cpp",
+          "Vtb_mlow_codec_verilator__Syms.h",
+          "Vtb_mlow_codec_verilator__Syms.cpp",
+          "verilator_tb_mlow_codec.d",
+          "Vtb_mlow_codec_verilator___024root__DepSet_hcf3b30fe__0.cpp",
+          "Vtb_mlow_codec_verilator__ConstPool_0.cpp",
+          "verilated.d",
+          "verilated_timing.o",
+          "Vtb_mlow_codec_verilator___024root__DepSet_hcf3b30fe__0__Slow.cpp",
+          "Vtb_mlow_codec_verilator__ALL.cpp",
+          "Vtb_mlow_codec_verilator__Trace__0__Slow.cpp",
+          "Vtb_mlow_codec_verilator__ALL.d",
+          "verilated_timing.d",
+          "Vtb_mlow_codec_verilator__ALL.a",
+          "Vtb_mlow_codec_verilator___024root__DepSet_hebb61af4__0__Slow.cpp",
+          "Vtb_mlow_codec_verilator.h",
+          "verilator_tb_mlow_codec.o",
+          "Vtb_mlow_codec_verilator.cpp",
+          "Vtb_mlow_codec_verilator__TraceDecls__0__Slow.cpp",
+          "Vtb_mlow_codec_verilator__Trace__0.cpp",
+          "verilated.o",
+          "Vtb_mlow_codec_verilator__pch.h"
+        ],
+        "subdirectories": []
+      },
+      "formal": {
+        "files": [
+          "formal_testbench.sv",
+          "handshake_protocols.sva",
+          "verification_checks.sv",
+          "formal_main.cpp",
+          "frame_integrity.sva",
+          "formal_verification_tb.sv"
+        ],
+        "subdirectories": []
+      },
+      "test": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "layout": {
+        "files": [
+          "README.md"
+        ],
+        "subdirectories": [
+          "constraints",
+          "lvs",
+          "drc"
+        ]
+      },
+      "layout/constraints": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "layout/lvs": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "layout/drc": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "public": {
+        "files": [
+          "test_harness_report.md",
+          "index_template.html",
+          "code_kpis.json",
+          "report-style.css",
+          "waveforms_template.html"
+        ],
+        "subdirectories": []
+      },
+      "rtl": {
+        "files": [
+          "mlow_encoder.sv",
+          "mlow_decoder.sv",
+          "mlow_codec.sv",
+          ".gitkeep",
+          "packet_framer.sv",
+          "audio_interface.sv"
+        ],
+        "subdirectories": []
+      },
+      "flow": {
+        "files": [
+          "synth_report.md"
+        ],
+        "subdirectories": [
+          "verilator",
+          "openlane",
+          "fpga",
+          "vivado",
+          "synthesis",
+          "openlane2",
+          "yosys"
+        ]
+      },
+      "flow/verilator": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "flow/openlane": {
+        "files": [
+          "config_gf180mcu.tcl",
+          "run_openlane_mlow.sh",
+          "README.md",
+          "quick_start_mlow.sh",
+          "Makefile",
+          "config.template.json",
+          "pin_order.cfg",
+          "configuration.md",
+          "config.tcl"
+        ],
+        "subdirectories": []
+      },
+      "flow/fpga": {
+        "files": [
+          "Makefile"
+        ],
+        "subdirectories": [
+          "build",
+          "constraints",
+          "openfpga"
+        ]
+      },
+      "flow/fpga/build": {
+        "files": [
+          "mlow_codec.v",
+          "mlow_codec_synth.ys",
+          "mlow_codec_synthesis_complete.txt"
+        ],
+        "subdirectories": []
+      },
+      "flow/fpga/constraints": {
+        "files": [
+          "mlow_codec.pcf"
+        ],
+        "subdirectories": []
+      },
+      "flow/fpga/openfpga": {
+        "files": [
+          "README.md",
+          "Makefile",
+          "timeout_wrapper.sh"
+        ],
+        "subdirectories": []
+      },
+      "flow/vivado": {
+        "files": [
+          "README.md",
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "flow/synthesis": {
+        "files": [
+          "Makefile",
+          "yosys_synth.ys",
+          "test_comprehensive_synthesis.sh",
+          "timeout_wrapper.sh"
+        ],
+        "subdirectories": [
+          "reports",
+          "netlists"
+        ]
+      },
+      "flow/synthesis/reports": {
+        "files": [
+          "audio_interface_stats.txt",
+          "mlow_codec_stats.txt"
+        ],
+        "subdirectories": []
+      },
+      "flow/synthesis/netlists": {
+        "files": [
+          "mlow_codec_generic.v"
+        ],
+        "subdirectories": []
+      },
+      "flow/openlane2": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "flow/yosys": {
+        "files": [
+          "gate_analysis.py",
+          "test_gate_report.md"
+        ],
+        "subdirectories": []
+      },
+      "simulation": {
+        "files": [
+          "README.md"
+        ],
+        "subdirectories": [
+          "waveforms",
+          "configs"
+        ]
+      },
+      "simulation/waveforms": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "simulation/configs": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "integration": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "scripts": {
+        "files": [
+          "generate_github_pages.py",
+          "generate_test_harness_report.py",
+          "README.md",
+          "code_kpis.py",
+          "generate_comprehensive_report.py"
+        ],
+        "subdirectories": []
+      },
+      "packaging": {
+        "files": [
+          "README.md"
+        ],
+        "subdirectories": []
+      },
+      "tb": {
+        "files": [
+          "README.md",
+          "Makefile"
+        ],
+        "subdirectories": [
+          "uvm_tb",
+          "sv_tb",
+          "cocotb"
+        ]
+      },
+      "tb/uvm_tb": {
+        "files": [
+          ".gitkeep"
+        ],
+        "subdirectories": []
+      },
+      "tb/sv_tb": {
+        "files": [
+          "verilator_tb_mlow_codec.cpp",
+          "Makefile",
+          ".gitkeep",
+          "tb_mlow_codec.sv",
+          "tb_mlow_codec_comprehensive.sv",
+          "tb_mlow_codec_verilator.sv",
+          "test_config.json",
+          "verilator_tb_mlow_codec_comprehensive.cpp",
+          "tb_mlow_codec.vvp"
+        ],
+        "subdirectories": []
+      },
+      "tb/cocotb": {
+        "files": [
+          "test_mlow_codec.py",
+          "Makefile",
+          ".gitkeep",
+          "test_config.json",
+          "test_example.py"
+        ],
+        "subdirectories": [
+          "sim_build"
+        ]
+      },
+      "tb/cocotb/sim_build": {
+        "files": [
+          "cmds.f"
+        ],
+        "subdirectories": []
+      }
+    }
+  },
+  "code_metrics": {
+    "rtl_files": 13,
+    "rtl_lines": 652763,
+    "rtl_modules": 33,
+    "testbench_files": 6,
+    "testbench_lines": 3112,
+    "constraint_files": 3,
+    "constraint_lines": 226,
+    "script_files": 4,
+    "script_lines": 1770
+  },
+  "documentation_metrics": {
+    "documentation_files": 8,
+    "documentation_lines": 5481,
+    "readme_exists": true,
+    "developer_guide_exists": true,
+    "architecture_docs": 1,
+    "api_docs": 0,
+    "tutorial_docs": 0
+  },
+  "test_metrics": {
+    "test_files": 8,
+    "test_lines": 3594,
+    "test_types": {
+      "systemverilog": 4,
+      "cocotb": 2,
+      "uvm": 0,
+      "formal": 2
+    },
+    "coverage_files": 0,
+    "test_vectors": 0
+  },
+  "quality_metrics": {
+    "linting_clean": false,
+    "synthesis_clean": false,
+    "simulation_passing": false,
+    "coverage_goals_met": false,
+    "documentation_complete": true,
+    "metadata_complete": true
+  },
+  "metadata_analysis": {
+    "metadata_exists": true,
+    "required_fields": {
+      "name": true,
+      "version": true,
+      "description": true,
+      "license": true,
+      "target": true,
+      "design_type": true,
+      "maturity": true
+    },
+    "optional_fields": {
+      "parameters": true,
+      "interfaces": true,
+      "files": false,
+      "test": true,
+      "flows": true,
+      "meta": false,
+      "created": true,
+      "updated": true
+    },
+    "validation_status": "valid",
+    "quality_score": 69.75,
+    "catalog_readiness": "needs_improvement",
+    "field_completeness": 86.66666666666667,
+    "interface_quality": 100.0,
+    "test_coverage_metadata": 100,
+    "flow_configuration": 25,
+    "documentation_metadata": 0,
+    "ai_generation_ready": false,
+    "issues": [],
+    "recommendations": [
+      "Configure synthesis and implementation flows for target platforms",
+      "Add AI generation metadata for automated development support"
+    ]
+  },
+  "summary": {
+    "overall_score": 86.975,
+    "strengths": [
+      "RTL implementation present",
+      "README documentation exists",
+      "Test coverage implemented"
+    ],
+    "areas_for_improvement": [],
+    "recommendations": [
+      "Consider advanced features like formal verification"
+    ]
+  }
+}

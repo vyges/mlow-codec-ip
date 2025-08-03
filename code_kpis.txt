@@ -1,0 +1,56 @@
+============================================================
+VYGES CODE KPIs ANALYSIS REPORT
+============================================================
+
+📁 PROJECT: 
+📅 Analysis Date: 2025-08-03T16:06:37.206254
+🔗 Git Status: dirty
+
+📊 OVERALL SCORE: 86.975/100
+
+💻 CODE METRICS:
+   RTL Files: 13
+   RTL Lines: 652763
+   RTL Modules: 33
+   Testbench Files: 6
+   Testbench Lines: 3112
+
+📚 DOCUMENTATION:
+   Documentation Files: 8
+   Documentation Lines: 5481
+   README Exists: ✅
+   Developer Guide: ✅
+
+🧪 TEST COVERAGE:
+   Test Files: 8
+   Test Lines: 3594
+   Coverage Files: 0
+
+✅ QUALITY METRICS:
+   Metadata Complete: ✅
+   Documentation Complete: ✅
+   Linting Clean: ❌
+   Synthesis Clean: ❌
+
+📋 VYGES METADATA ANALYSIS:
+   Quality Score: 69.8/100
+   Catalog Readiness: NEEDS_IMPROVEMENT
+   Field Completeness: 86.7%
+   Interface Quality: 100.0%
+   Test Coverage Metadata: 100.0%
+   Flow Configuration: 25.0%
+   AI Generation Ready: ❌
+
+💡 METADATA RECOMMENDATIONS:
+   💡 Configure synthesis and implementation flows for target platforms
+   💡 Add AI generation metadata for automated development support
+
+💪 STRENGTHS:
+   ✅ RTL implementation present
+   ✅ README documentation exists
+   ✅ Test coverage implemented
+
+💡 RECOMMENDATIONS:
+   💡 Consider advanced features like formal verification
+
+============================================================
