@@ -1,13 +1,13 @@
 {
   "project_info": {
     "project_name": "",
-    "analysis_date": "2025-08-03T16:06:36.997000",
+    "analysis_date": "2025-08-03T17:51:52.996936",
     "project_root": "/home/runner/work/mlow-codec-ip/mlow-codec-ip",
     "git_repo": "/home/runner/work/mlow-codec-ip/mlow-codec-ip",
     "git_status": "dirty"
   },
   "file_structure": {
-    "total_files": 166,
+    "total_files": 168,
     "total_directories": 48,
     "file_types": {
       ".md": 24,
@@ -24,14 +24,14 @@
       ".a": 1,
       ".sv": 11,
       ".sva": 2,
-      ".html": 2,
+      ".html": 3,
+      ".txt": 4,
       ".css": 1,
       ".tcl": 2,
       ".sh": 5,
       ".cfg": 1,
       ".v": 2,
       ".ys": 2,
-      ".txt": 3,
       ".pcf": 1,
       ".py": 7,
       ".f": 1
@@ -278,6 +278,8 @@
           "test_harness_report.md",
           "index_template.html",
           "code_kpis.json",
+          "code_kpis.txt",
+          "index.html",
           "report-style.css",
           "waveforms_template.html"
         ],
@@ -508,7 +510,7 @@
     "constraint_files": 3,
     "constraint_lines": 226,
     "script_files": 4,
-    "script_lines": 1770
+    "script_lines": 1800
   },
   "documentation_metrics": {
     "documentation_files": 8,

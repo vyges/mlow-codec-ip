@@ -1,7 +1,7 @@
 # MLow Codec IP Gate-Level Analysis Report
 ============================================================
 
-Generated: 2025-08-03 16:06:37
+Generated: 2025-08-03 17:51:53
 
 ## 📊 Gate Count Summary
 
