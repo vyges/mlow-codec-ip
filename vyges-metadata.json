@@ -1,0 +1,331 @@
+{
+  "$schema": "https://vyges.com/schema/v1/vyges-metadata.schema.json",
+  "x-version": "1.0.0",
+  "name": "vyges/mlow-codec",
+  "version": "1.0.0",
+  "description": "MLow: Meta's Low Bitrate Audio Codec - A high-quality, low-complexity audio codec achieving 2x better quality than Opus at 6kbps with 10% lower computational complexity. Implements split-band CELP architecture with SuperWideBand support. Features dual implementation strategy with simplified Icarus-compatible version and full SystemVerilog reference design.",
+  "license": "Apache-2.0",
+  "template": "vyges-ip-template@1.0.0",
+  "target": ["asic", "fpga"],
+  "design_type": ["digital"],
+  "maturity": "prototype",
+  "created": "2025-08-02T16:08:15Z",
+  "updated": "2025-08-02T15:15:00Z",
+  "source": {
+    "type": "git",
+    "url": "https://github.com/vyges/mlow",
+    "commit": "main",
+    "private": false,
+    "containsEncryptedPayload": false,
+    "indexing": true
+  },
+  "maintainers": [
+    {
+      "name": "Vyges Team",
+      "email": "team@vyges.com",
+      "github": "vyges"
+    }
+  ],
+  "branding": {
+    "provider": "Vyges Inc.",
+    "logo": "https://vyges.com/assets/logo.svg",
+    "website": "https://vyges.com/ip/mlow-codec",
+    "usage": "Use of the logo is permitted for attribution or compatibility references only."
+  },
+  "interfaces": [
+    {
+      "type": "clock",
+      "direction": "input",
+      "signals": [
+        { "name": "clk_i", "direction": "input", "type": "clock", "description": "System clock input" }
+      ]
+    },
+    {
+      "type": "reset",
+      "direction": "input",
+      "signals": [
+        { "name": "reset_n_i", "direction": "input", "type": "reset", "active_level": "low", "description": "Active-low reset signal" }
+      ]
+    },
+    {
+      "type": "audio_input",
+      "direction": "input",
+      "signals": [
+        { "name": "audio_data_i", "direction": "input", "width": 16, "type": "data", "description": "16-bit PCM audio input" },
+        { "name": "audio_valid_i", "direction": "input", "type": "control", "description": "Audio data valid flag" },
+        { "name": "audio_ready_o", "direction": "output", "type": "control", "description": "Ready to accept audio data" }
+      ]
+    },
+    {
+      "type": "audio_output",
+      "direction": "output",
+      "signals": [
+        { "name": "audio_data_o", "direction": "output", "width": 16, "type": "data", "description": "16-bit PCM audio output" },
+        { "name": "audio_valid_o", "direction": "output", "type": "control", "description": "Audio data valid flag" },
+        { "name": "audio_ready_i", "direction": "input", "type": "control", "description": "Downstream ready to accept audio" }
+      ]
+    },
+    {
+      "type": "codec_control",
+      "direction": "input",
+      "signals": [
+        { "name": "encode_mode_i", "direction": "input", "type": "control", "description": "1=encode, 0=decode mode" },
+        { "name": "bitrate_sel_i", "direction": "input", "width": 4, "type": "data", "description": "Bitrate selection (6-32 kbps)" },
+        { "name": "bandwidth_sel_i", "direction": "input", "width": 2, "type": "data", "description": "00=NB, 01=WB, 10=SWB" }
+      ]
+    },
+    {
+      "type": "packet_interface",
+      "direction": "bidirectional",
+      "signals": [
+        { "name": "packet_data_io", "direction": "inout", "width": 8, "type": "data", "description": "8-bit packet data" },
+        { "name": "packet_valid_o", "direction": "output", "type": "control", "description": "Packet data valid" },
+        { "name": "packet_ready_i", "direction": "input", "type": "control", "description": "Ready to accept packet data" },
+        { "name": "packet_start_o", "direction": "output", "type": "control", "description": "Start of packet indicator" },
+        { "name": "packet_end_o", "direction": "output", "type": "control", "description": "End of packet indicator" }
+      ]
+    },
+    {
+      "type": "status",
+      "direction": "output",
+      "signals": [
+        { "name": "busy_o", "direction": "output", "type": "control", "description": "Codec processing busy" },
+        { "name": "error_o", "direction": "output", "type": "control", "description": "Error indicator" },
+        { "name": "quality_metric_o", "direction": "output", "width": 8, "type": "data", "description": "Audio quality metric" }
+      ]
+    }
+  ],
+  "parameters": [
+    {
+      "name": "SAMPLE_RATE",
+      "type": "int",
+      "default": 48000,
+      "description": "Audio sample rate in Hz",
+      "range": { "min": 8000, "max": 48000 },
+      "units": "Hz",
+      "required": false
+    },
+    {
+      "name": "FRAME_SIZE",
+      "type": "int",
+      "default": 480,
+      "description": "Number of samples per frame",
+      "range": { "min": 120, "max": 960 },
+      "units": "samples",
+      "required": false
+    },
+    {
+      "name": "MAX_BITRATE",
+      "type": "int",
+      "default": 32000,
+      "description": "Maximum supported bitrate",
+      "range": { "min": 6000, "max": 32000 },
+      "units": "bps",
+      "required": false
+    },
+    {
+      "name": "LPC_ORDER",
+      "type": "int",
+      "default": 16,
+      "description": "Linear Predictive Coding order",
+      "range": { "min": 8, "max": 24 },
+      "units": "coefficients",
+      "required": false
+    },
+    {
+      "name": "SUBBAND_COUNT",
+      "type": "int",
+      "default": 2,
+      "description": "Number of frequency subbands",
+      "range": { "min": 1, "max": 4 },
+      "units": "bands",
+      "required": false
+    }
+  ],
+  "test": {
+    "coverage": true,
+    "testbenches": ["cocotb", "systemverilog"],
+    "simulators": ["verilator", "iverilog"],
+    "status": "passing",
+    "test_categories": 10,
+    "test_count": 25,
+    "cocotb_integration": {
+      "status": "verified",
+      "version": "v1.9.2",
+      "simulators": ["icarus", "verilator"],
+      "makefile_approach": "standard",
+      "fallback_support": true
+    },
+    "comprehensive_testing": {
+      "status": "implemented",
+      "testbenches": [
+        "tb_mlow_codec.sv",
+        "tb_mlow_codec_comprehensive.sv",
+        "tb_mlow_codec_verilator.sv"
+      ],
+      "categories": [
+        "Basic Functionality",
+        "Bitrate Coverage", 
+        "Bandwidth Coverage",
+        "Audio Patterns",
+        "Performance Tests",
+        "Error Conditions",
+        "Backpressure Handling",
+        "Continuous Operation",
+        "Edge Cases",
+        "Quality Metrics"
+      ]
+    }
+  },
+  "flows": {
+    "verilator": {
+      "status": "verified",
+      "cocotb_integration": "working",
+      "cpp_main_function": "implemented"
+    },
+    "icarus": {
+      "status": "verified",
+      "cocotb_integration": "working"
+    },
+    "yosys": {
+      "status": "verified",
+      "synthesis": "working",
+      "netlist_generation": "verified"
+    },
+    "fpga": {
+      "status": "implemented",
+      "toolchains": {
+        "yosys_only": "verified",
+        "yosys_nextpnr": "planned",
+        "openfpga": "planned",
+        "vivado": "planned"
+      },
+      "supported_families": ["ice40", "ecp5", "custom"]
+    },
+    "vivado": {
+      "status": "planned",
+      "cocotb_integration": "planned"
+    },
+    "openlane": {
+      "status": "implemented",
+      "cocotb_integration": "planned",
+      "configurations": {
+        "sky130": "config.tcl",
+        "gf180mcu": "config_gf180mcu.tcl"
+      },
+      "pin_order": "pin_order.cfg",
+      "scripts": {
+        "run_flow": "run_openlane_mlow.sh",
+        "quick_start": "quick_start_mlow.sh"
+      }
+    }
+  },
+  "toolchain_support": {
+    "synthesis": ["yosys", "design_compiler"],
+    "simulation": ["verilator", "icarus", "modelsim"],
+    "formal": ["yosys-smtbmc", "sby"],
+    "linting": ["verible", "spyglass"],
+    "coverage": ["verilator", "icarus"],
+    "fpga": ["yosys", "nextpnr", "icepack", "openfpga", "vpr"]
+  },
+  "implementation_strategy": {
+    "dual_implementation": true,
+    "simplified_version": {
+      "status": "implemented",
+      "compatibility": ["icarus", "verilator", "yosys"],
+      "modules": ["mlow_codec.sv", "audio_interface.sv"],
+      "features": ["core_functionality", "fpga_ready", "open_source_tools"]
+    },
+    "full_version": {
+      "status": "reference",
+      "compatibility": ["modelsim", "vcs", "xcelium"],
+      "modules": [
+        "mlow_codec.sv",
+        "audio_interface.sv", 
+        "split_band_processor.sv",
+        "celp_encoder.sv",
+        "celp_decoder.sv",
+        "range_codec.sv"
+      ],
+      "features": ["complete_feature_set", "advanced_verification", "commercial_tools"]
+    }
+  },
+  "categories": [
+    "Signal Processing",
+    "Codecs"
+  ],
+  "tags": [
+    "audio",
+    "codec",
+    "mlow",
+    "celp",
+    "low-bitrate",
+    "real-time",
+    "rtc",
+    "compression",
+    "split-band",
+    "superwideband",
+    "communication",
+    "fpga",
+    "open-source",
+    "yosys",
+    "verilator",
+    "icarus"
+  ],
+  "trust_profile": {
+    "security_level": "standard",
+    "maturity": "prototype",
+    "verification_status": "comprehensive",
+    "certifications": []
+  },
+  "performance": {
+    "latency": {
+      "encoding": "20ms",
+      "decoding": "15ms",
+      "units": "milliseconds"
+    },
+    "throughput": {
+      "max_samples_per_second": 48000,
+      "max_bitrate": 32000,
+      "units": "samples/sec, bps"
+    },
+    "quality": {
+      "polqa_mos": "3.9",
+      "bitrate_range": "6-32 kbps",
+      "bandwidth_support": ["narrowband", "wideband", "superwideband"]
+    }
+  },
+  "power": {
+    "typical": "5mW",
+    "maximum": "15mW",
+    "units": "milliwatts",
+    "power_domains": ["core", "io"]
+  },
+  "area": {
+    "estimated_gates": 50000,
+    "estimated_area": "0.1mm²",
+    "technology_node": "28nm"
+  },
+  "fpga_implementation": {
+    "status": "implemented",
+    "primary_target": "ice40",
+    "synthesis_tool": "yosys",
+    "generated_files": {
+      "netlist": "build/mlow_codec.v",
+      "json_netlist": "build/mlow_codec.json",
+      "synthesis_script": "build/mlow_codec_synth.ys",
+      "fpga_report": "reports/fpga_report.txt"
+    },
+    "file_sizes": {
+      "verilog_netlist": "43KB",
+      "json_netlist": "460KB"
+    }
+  },
+  "documentation": {
+    "overview": "docs/overview.md",
+    "architecture": "docs/architecture.md",
+    "interface": "docs/interface.md",
+    "testbench": "docs/testbench.md",
+    "integration": "docs/integration.md"
+  }
+} 

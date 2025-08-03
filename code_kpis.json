@@ -1,7 +1,7 @@
 {
   "project_info": {
     "project_name": "",
-    "analysis_date": "2025-08-03T17:51:52.996936",
+    "analysis_date": "2025-08-03T20:49:37.150475",
     "project_root": "/home/runner/work/mlow-codec-ip/mlow-codec-ip",
     "git_repo": "/home/runner/work/mlow-codec-ip/mlow-codec-ip",
     "git_status": "dirty"
@@ -510,7 +510,7 @@
     "constraint_files": 3,
     "constraint_lines": 226,
     "script_files": 4,
-    "script_lines": 1800
+    "script_lines": 1847
   },
   "documentation_metrics": {
     "documentation_files": 8,
