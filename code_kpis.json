@@ -1,7 +1,7 @@
 {
   "project_info": {
     "project_name": "",
-    "analysis_date": "2025-08-11T01:43:05.801204",
+    "analysis_date": "2025-08-16T06:36:51.804897",
     "project_root": "/home/runner/work/mlow-codec-ip/mlow-codec-ip",
     "git_repo": "/home/runner/work/mlow-codec-ip/mlow-codec-ip",
     "git_status": "dirty"
@@ -563,10 +563,10 @@
       "updated": true
     },
     "validation_status": "valid",
-    "quality_score": 69.75,
+    "quality_score": 79.75,
     "catalog_readiness": "needs_improvement",
     "field_completeness": 86.66666666666667,
-    "interface_quality": 100.0,
+    "interface_quality": 150.0,
     "test_coverage_metadata": 100,
     "flow_configuration": 25,
     "documentation_metadata": 0,
@@ -578,7 +578,7 @@
     ]
   },
   "summary": {
-    "overall_score": 86.975,
+    "overall_score": 87.975,
     "strengths": [
       "RTL implementation present",
       "README documentation exists",
