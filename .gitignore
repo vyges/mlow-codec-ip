@@ -3,45 +3,74 @@ runs/
 results/
 
 # Scripts and documentation
-run_ubuntu.sh           # Ubuntu test script (should not be committed)
-docs/*refs.md          # Reference documentation files
+# Ubuntu test script (should not be committed)
+run_ubuntu.sh
+# Reference documentation files
+docs/*refs.md
 
 # Build directories
-build/                  # Main build directory
-obj_dir/               # Verilator object directory
+# Main build directory
+build/
+# Verilator object directory
+obj_dir/
 
 # Simulation artifacts (Verilog/SystemVerilog)
-*.vcd                   # Waveform files
-*.vvp                   # Icarus Verilog simulation files
-*.vpd                   # VCS waveform files
-*.wlf                   # ModelSim waveform files
-*.key                   # License key files
-*.log                   # Tool log files
-simv                    # VCS simulation executable
-simv.out               # VCS simulation output
-simv.daidir            # VCS simulation directory
-*.o                    # Object files
-*.a                    # Archive files
-*.so                   # Shared object files
+# Waveform files
+*.vcd
+# Icarus Verilog simulation files
+*.vvp
+# VCS waveform files
+*.vpd
+# ModelSim waveform files
+*.wlf
+# License key files
+*.key
+# Tool log files
+*.log
+# VCS simulation executable
+simv
+# VCS simulation output
+simv.out
+# VCS simulation directory
+simv.daidir
+# Object files
+*.o
+# Archive files
+*.a
+# Shared object files
+*.so
 
 # Testbench build artifacts
-tb/sv_tb/build/        # SystemVerilog testbench build directory
-tb/sv_tb/logs/         # Testbench log files
-tb/sv_tb/waves/        # Testbench waveform files
-tb/cocotb/build/       # Cocotb build directory
-tb/cocotb/logs/        # Cocotb log files
+# SystemVerilog testbench build directory
+tb/sv_tb/build/
+# Testbench log files
+tb/sv_tb/logs/
+# Testbench waveform files
+tb/sv_tb/waves/
+# Cocotb build directory
+tb/cocotb/build/
+# Cocotb log files
+tb/cocotb/logs/
 
 # Synthesis artifacts
-flow/synthesis/netlists/  # Synthesis netlists
-flow/synthesis/reports/   # Synthesis reports
-flow/fpga/build/          # FPGA build directory
-flow/fpga/reports/        # FPGA reports
-flow/yosys/build/         # Yosys build directory
+# Synthesis netlists
+flow/synthesis/netlists/
+# Synthesis reports
+flow/synthesis/reports/
+# FPGA build directory
+flow/fpga/build/
+# FPGA reports
+flow/fpga/reports/
+# Yosys build directory
+flow/yosys/build/
 
 # Coverage files
-coverage/               # Coverage data
-*.ucdb                 # Coverage database files
-*.xml                  # Coverage XML files
+# Coverage data
+coverage/
+# Coverage database files
+*.ucdb
+# Coverage XML files
+*.xml
 
 # Python (cocotb)
 __pycache__/
@@ -127,22 +156,32 @@ secrets.json
 .vyges-ai-context.sha256
 
 # Analog design intermediate files (following Efabless recommendations)
-*.ext                    # Magic extraction files
-*.raw                    # SPICE raw files
-*.sp                     # SPICE files (if large)
-*.log                    # Tool log files
+# Magic extraction files
+*.ext
+# SPICE raw files
+*.raw
+# SPICE files (if large)
+*.sp
+# Tool log files
+*.log
 
 # Layout intermediate files
-*.mag                    # Magic database files
-*.gds                    # GDS files (if large)
-*.lef                    # LEF files (if large)
+# Magic database files
+*.mag
+# GDS files (if large)
+*.gds
+# LEF files (if large)
+*.lef
 
 # Simulation results (large files)
-simulation/results/      # Large simulation outputs
-simulation/waveforms/    # Waveform files
+# Large simulation outputs
+simulation/results/
+# Waveform files
+simulation/waveforms/
 
 # Macros directory (should be separate repositories)
-analog/macros/          # Symbolic links to other projects
+# Symbolic links to other projects
+analog/macros/
 
 # Analog tool temporary files
 *.tmp
