@@ -14,11 +14,13 @@ name: Build and Test MLow Codec IP
 # Configuration variables - modify these to change versions
 # These are used throughout the workflow for version consistency
 
+# Manual only, and the workflow is also disabled at the repo level.
+#
+# This pipeline was the 2025 experiment in having an IP publish its own test
+# reports for customers. That approach has been superseded, so per-push builds
+# produce reports nobody reads while consuming Actions storage and minutes.
+# Re-enable with `gh workflow enable` and dispatch it if a run is ever needed.
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
   workflow_dispatch:
     inputs:
       design_type:
