@@ -65,9 +65,10 @@ class VygesCodeKPIs:
     def _get_project_info(self) -> Dict[str, Any]:
         """Get basic project information."""
         info = {
-            "project_name": self.project_root.name,
+            "project_name": self.project_root.resolve().name,
             "analysis_date": datetime.now().isoformat(),
-            "project_root": str(self.project_root.absolute())
+            # Relative on purpose: the report is published, so no machine-specific path.
+            "project_root": "."
         }
         
         # Try to get git info
@@ -79,7 +80,8 @@ class VygesCodeKPIs:
                 text=True
             )
             if result.returncode == 0:
-                info["git_repo"] = result.stdout.strip()
+                # Repository name only, never the absolute checkout path.
+                info["git_repo"] = Path(result.stdout.strip()).name
                 
                 # Get git status
                 result = subprocess.run(

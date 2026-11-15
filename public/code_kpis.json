@@ -1,9 +1,9 @@
 {
   "project_info": {
-    "project_name": "",
+    "project_name": "mlow-codec-ip",
     "analysis_date": "2025-08-03T09:59:09.976284",
-    "project_root": "/Users/smysore/shiva/github/vyges/mlow-codec-ip",
-    "git_repo": "/Users/smysore/shiva/github/vyges/mlow-codec-ip",
+    "project_root": ".",
+    "git_repo": "mlow-codec-ip",
     "git_status": "dirty"
   },
   "file_structure": {
